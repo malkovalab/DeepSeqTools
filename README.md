@@ -15,4 +15,6 @@ This `python3` project relies on the following list of packages and dependencies
 
 To install the required packages run this command:
 
-`pip install -r requirements.txt`
+```bash
+pip install -r requirements.txt
+```
