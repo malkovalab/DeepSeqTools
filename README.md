@@ -9,5 +9,10 @@ This `python3` project relies on the following list of packages and dependencies
 - `pysam`
 - `pandas`
 - `seaborn`
-- `tqdm`
+- `regex`
+- `numpy`
+- `joblib`
 
+To install the required packages run this command:
+
+`pip install -r requirements.txt`
