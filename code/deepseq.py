@@ -1,4 +1,6 @@
 import sys
+
+#add your python libraries to your path. You can comment this out or change according to your needs.
 sys.path.append('./.local/lib/python3.6/site-packages')
 
 import pysam
@@ -10,7 +12,10 @@ import seaborn as sns
 import numpy as np
 from joblib import Parallel, delayed
 
+
+
 def dataFrameImport(directory,datatype = 'sam'):
+  #This function imports all files inside of the specified DIR path into two lists; of panda DF and sample names
   frames_list_samples = []
   sample_names = []
 
@@ -29,15 +34,19 @@ def dataFrameImport(directory,datatype = 'sam'):
   return(frames_list_samples, sample_names)
 
 def matchSequence(row, sequence):
+  #for searching for perfectly matched sequences.
   if (sequence in row):
     return(True)
   else:
     return(False)
 
 def findReadLength(row):
+  #returns a length of a read
   return(len(row))
 
 def trimseq(row, f_seq, r_seq, consensus):
+  #trims sequences to the 5' end of primers and finds reads that support non-deletions.
+  #allows for 2 errors in non-deletions.
 
   if row.forward_primer == True:
     f_seq_index = row.seq.find(f_seq)
@@ -60,6 +69,7 @@ def trimseq(row, f_seq, r_seq, consensus):
   return(row)
 
 def classify(row, consensus, classification):
+  #this function classifies the sequence based on the provided consensus, allows for 2 errors.
 
   if row.classification != "other":
     return row
@@ -70,7 +80,7 @@ def classify(row, consensus, classification):
   return row
 
 def run_sample(frames, i):
-
+  #Takes a DF from the list of dataframes and runs the classification pipeline. 
   print("starting analysis")
   #find the length of each read
   frames[i]['read_length'] = frames[i].apply(lambda row: findReadLength(row.seq), axis=1)
@@ -132,7 +142,7 @@ def run_sample(frames, i):
   frames[i].to_csv(f'{names[i]}.csv', index=True)
 
 ################################################################################
-
+#define consensus sequences for all events to be classified, as well as primer sequences used for amplification.
 forward_primer="GTTCGTACCCCTCTCGAGAATA"
 reverse_primer="GGTCTTTCAGATGAGAAGTGGATGG"
 lys2_consensus="GTTCGTACCCCTCTCGAGAATATTTTGTTGAACCTAATAGTGCCGAAGGAAAAACAACAATTAATGTGTTTGTTACCGGTGTCACAGGATTTCTGGGCTCCTACATCCTTGCAGATTTGTTAGGACGTTCTCCAAAGAACTACAGTTTCAAAGTGTTTGCCCACGTCAGGGCCTGACTCTTATACACAAGTAGCGTCCTGAACGGAACCTTTCCCGTTTTCCAGGATCTGATCTTCCATGTTAGGAGGTCACATGGAAGATCAGATCCTGGAAAACGGGAAAGGTTCCGTTCAGGACGCTACTTGTGTATAAGAGTCAGCGTCAGGGCCAAGGATGAAGAAGCTGCATTTGCAAGATTACAAAAGGCAGGTATCACCTATGGTACTTGGAACGAAAAATTTGCCTCAAATATTAAAGTTGTATTAGGCGATTTATCTAAAAGCCAATTTGGTCTTTCAGATGAGAAGTGGATGG"
@@ -154,8 +164,10 @@ ex_J7 =        "GTTCGTACCCCTCTCGAGAATATTTTGTTGAACCTAATAGTGCCGAAGGAAAAACAACAATTAA
 
 ################################################################################
 
+#load the dataset from file:
 frames, names =  dataFrameImport('30-614151413/00_fastq/filtered_bams', 'bam')
 
+#fur running all samples in parallel
 jobs = len(frames)
 
 Parallel(n_jobs=18)(
