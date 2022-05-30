@@ -18,4 +18,4 @@ To install the required packages run this command:
 ```bash
 pip install -r requirements.txt
 ```
-The `python` code used for the reads processing as well as scripts used for reads pre-processing (made for uiowa ARGOM SGE compute cluster) is placed inside of the code directory.
+The `python` code used for the reads processing as well as scripts used for reads pre-processing (made for uiowa ARGON SGE compute cluster) is placed inside of the code directory.
